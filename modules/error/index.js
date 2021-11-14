@@ -18,7 +18,7 @@ const handleError = (code) => {
       stderr.write(`Error(code - ${code}). Output file is missing or unavailable\n`);
       break;
     default:
-      stdout.write('\n\nDone!\n');
+      stdout.write('Done!\n');
   }
 };
 

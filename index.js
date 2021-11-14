@@ -20,17 +20,11 @@ const writableStream = config.output ? fs.createWriteStream(config.output, { fla
 readableStream.on('error', () => exit(4));
 writableStream.on('error', () => exit(5));
 
-const getTransformArr = (arr) => {
-  const newArr = arr.map((item) => {
-    const trans = new Transform({
-      transform(chunk, encoding, callback) {
-        callback(null, crypt(chunk, item));
-      },
-    });
-    return trans;
-  });
-  return newArr;
-};
+const getTransformArr = (arr) => arr.map((item) => new Transform({
+  transform(chunk, encoding, callback) {
+    callback(null, crypt(chunk, item));
+  },
+}));
 
 const transformArr = getTransformArr(config.cipher);
 
