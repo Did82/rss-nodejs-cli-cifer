@@ -21,10 +21,12 @@ hasDuplicates(args) && exit(1);
 const getAllowedConfig = (args) => {
   const allowedConfig = ['C0', 'C1', 'R0', 'R1', 'A'];
   const allowedFlags = {
-    cipher: { short: '-c', long: '--config' },
+    cipher: { short: '-c', long: '--config', required: true },
     input: { short: '-i', long: '--input' },
     output: { short: '-o', long: '--output' },
   };
+
+  const validateConfig = (arr) => arr.every((item) => allowedConfig.includes(item));
 
   const getConfigValue = (obj) => {
     const shortIndex = args.indexOf(obj.short);
@@ -35,7 +37,7 @@ const getAllowedConfig = (args) => {
     if (longIndex !== -1) {
       return args[longIndex + 1];
     }
-    return false;
+    return obj.required ? exit(3) : false;
   };
 
   const config = {
@@ -44,11 +46,9 @@ const getAllowedConfig = (args) => {
     output: getConfigValue(allowedFlags.output),
   };
 
-  const validateConfig = (arr) => arr.every((item) => allowedConfig.includes(item));
-
   const isAllowedConfig = validateConfig(config.cipher);
   return isAllowedConfig ? config : exit(2);
 };
 
-const qwe = getAllowedConfig(args);
-console.log(qwe);
+const config = getAllowedConfig(args);
+console.log(config);
