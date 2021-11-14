@@ -1,54 +1,24 @@
+const fs = require('fs');
 const crypt = require('./modules/crypt');
+const getAllowedConfig = require('./modules/validation');
+const handleError = require('./modules/error');
 
-const text = 'This is secret. Message about "_" symbol!';
+const args = process.argv.slice(2);
 const {
   stdout, stdin, exit, stderr,
 } = process;
-const args = process.argv.slice(2);
 
-const hasDuplicates = (array) => new Set(array).size !== array.length;
+process.on('exit', (code) => handleError(code));
 
-process.on('exit', (code) => {
-  if (code === 0) {
-    stdout.write('Done!\n');
-  } else {
-    stderr.write(`Что-то пошло не так. Программа завершилась с кодом ${code}\n`);
-  }
-});
+const stream = fs.createReadStream('source2.txt', 'utf-8');
 
-hasDuplicates(args) && exit(1);
+let data = '';
 
-const getAllowedConfig = (args) => {
-  const allowedConfig = ['C0', 'C1', 'R0', 'R1', 'A'];
-  const allowedFlags = {
-    cipher: { short: '-c', long: '--config', required: true },
-    input: { short: '-i', long: '--input' },
-    output: { short: '-o', long: '--output' },
-  };
-
-  const validateConfig = (arr) => arr.every((item) => allowedConfig.includes(item));
-
-  const getConfigValue = (obj) => {
-    const shortIndex = args.indexOf(obj.short);
-    const longIndex = args.indexOf(obj.long);
-    if (shortIndex !== -1) {
-      return args[shortIndex + 1];
-    }
-    if (longIndex !== -1) {
-      return args[longIndex + 1];
-    }
-    return obj.required ? exit(3) : false;
-  };
-
-  const config = {
-    cipher: getConfigValue(allowedFlags.cipher).split('-'),
-    input: getConfigValue(allowedFlags.input),
-    output: getConfigValue(allowedFlags.output),
-  };
-
-  const isAllowedConfig = validateConfig(config.cipher);
-  return isAllowedConfig ? config : exit(2);
-};
+stream.on('data', (chunk) => data += chunk);
+stream.on('end', () => console.log('End', data));
+stream.on('error', (error) => console.log('Error', error.message));
 
 const config = getAllowedConfig(args);
+
+const text = 'This is secret. Message about "_" symbol!';
 console.log(config);
