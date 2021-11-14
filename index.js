@@ -27,16 +27,12 @@ const getTransformArr = (arr) => {
         callback(null, crypt(chunk, item));
       },
     });
-    // console.log(trans);
     return trans;
   });
   return newArr;
 };
-const transformArr = getTransformArr(config.cipher);
-// console.log(transformArr);
 
-const text = 'This is secret. Message about "_" symbol!';
-console.log(config);
+const transformArr = getTransformArr(config.cipher);
 
 pipeline(
   readableStream,
