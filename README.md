@@ -24,6 +24,7 @@ For example, config `"C1-C1-R0-A"` means "encode by Caesar cipher => encode by C
 If the input file option is missed - tool use console as an input source.
 
 If the output file option is missed - tool use console as an output destination.
+
 **Usage example:**
 
 ```bash
